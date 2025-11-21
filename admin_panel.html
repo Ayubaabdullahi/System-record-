@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Financial Panel · Brilliant Success Footsteps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <style>
+    :root {
+      --brand: #003366;
+      --gold: #ffb400;
+      --light-gold: #ffdd70;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --presidential: #001f3f;
+      --shadow: 0 20px 50px rgba(0,0,0,0.25);
+      --glow: 0 0 40px rgba(255,180,0,.7);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #001f3f, #003366, #0077b6);
+      color: white;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header.navbar {
+      background: linear-gradient(135deg, var(--presidential), #001122);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 12px 40px rgba(0,0,0,.7);
+      border-bottom: 6px solid var(--gold);
+    }
+    .hamburger {
+      position: absolute; left: 1.5rem; top: 2.5rem;
+      background: var(--gold); color: var(--brand); border: none;
+      width: 62px; height: 62px; border-radius: 50%; font-size: 28px;
+      cursor: pointer; z-index: 101; box-shadow: 0 8px 25px rgba(0,0,0,.5);
+      transition: .5s;
+    }
+    .hamburger:hover { transform: scale(1.15); box-shadow: var(--glow); }
+
+    .logo-row {
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    .logo {
+      height: 110px; border-radius: 28px; border: 6px solid var(--gold);
+      box-shadow: var(--glow);
+    }
+    .school-name {
+      font-size: 38px; font-weight: 900; letter-spacing: 2.5px;
+      background: linear-gradient(to right, white, var(--light-gold), #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .motto {
+      color: var(--light-gold); font-weight: 900; font-size: 24px;
+      margin: 18px 0; letter-spacing: 1.8px;
+    }
+    .icons {
+      display: flex; gap: 32px; font-size: 32px; color: var(--light-gold);
+    }
+
+    /* SIDEBAR */
+    nav.sidebar {
+      position: fixed; left: -360px; top: 0; width: 360px; height: 100%;
+      background: linear-gradient(135deg, var(--presidential), #001122);
+      padding-top: 140px; transition: .5s ease; z-index: 100;
+      border-right: 4px solid var(--gold);
+    }
+    nav.sidebar.active { left: 0; }
+    nav.sidebar a {
+      display: flex; align-items: center; gap: 22px;
+      padding: 1.6rem 2.5rem; color: #fff; font-weight: 700;
+      font-size: 18px; text-decoration: none; transition: .4s;
+    }
+    nav.sidebar a:hover { background: rgba(255,180,0,.35); padding-left: 4rem; }
+
+    /* WELCOME */
+    .welcome-presidential {
+      text-align: center; margin: 3rem auto; max-width: 1000px;
+      padding: 3rem; background: rgba(255,255,255,0.1);
+      border-radius: 30px; border: 3px solid var(--gold);
+      backdrop-filter: blur(15px); box-shadow: var(--shadow);
+    }
+    .welcome-presidential h1 {
+      font-size: 42px; color: var(--light-gold);
+    }
+
+    /* TERM BUTTONS */
+    .term-selector {
+      display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; flex-wrap: wrap;
+    }
+    .term-btn {
+      padding: 16px 32px; background: rgba(255,255,255,0.15);
+      border: 2px solid var(--gold); border-radius: 16px;
+      font-weight: 700; font-size: 18px; cursor: pointer;
+      transition: .4s; min-width: 180px;
+    }
+    .term-btn.active, .term-btn:hover {
+      background: var(--gold); color: var(--brand);
+      box-shadow: var(--glow); transform: translateY(-4px);
+    }
+
+    /* SUMMARY CARDS */
+    .summary-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem; margin: 3rem auto; max-width: 1300px; padding: 0 1.5rem;
+    }
+    .summary-card {
+      background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
+      padding: 2rem; border-radius: 24px; text-align: center;
+      box-shadow: var(--shadow); border-left: 6px solid var(--gold);
+    }
+    .summary-value {
+      font-size: 40px; font-weight: 900; color: white !important;
+      text-shadow: 0 4px 15px rgba(0,0,0,.6);
+      margin: 1rem 0;
+    }
+    .label { font-size: 18px; opacity: 0.95; }
+
+    /* TABLE */
+    .table-container {
+      margin: 3rem 1rem; overflow-x: auto;
+      background: rgba(255,255,255,0.1); border-radius: 24px;
+      box-shadow: var(--shadow); border: 2px solid rgba(255,180,0,0.3);
+    }
+    .table-title {
+      background: linear-gradient(45deg, var(--gold), #e6a800);
+      color: var(--brand); padding: 1.8rem; text-align: center;
+      font-size: 26px; font-weight: 800;
+    }
+    table {
+      width: 100%; min-width: 900px; border-collapse: collapse;
+    }
+    th {
+      background: rgba(255,255,255,0.15); padding: 18px; font-size: 16px;
+      font-weight: 700; text-transform: uppercase;
+    }
+    td {
+      padding: 16px; text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    tr:hover { background: rgba(255,255,255,0.08); }
+    .amount {
+      font-weight: 800; font-size: 17px; color: white !important;
+    }
+    .expected { color: var(--gold) !important; }
+    .paid { color: var(--success) !important; }
+    .outstanding { color: var(--danger) !important; }
+
+    /* REMINDER BUTTON */
+    .reminder-btn {
+      display: block; margin: 3rem auto; padding: 20px 60px;
+      background: var(--danger); color: white; border: none;
+      border-radius: 20px; font-size: 22px; font-weight: 800;
+      cursor: pointer; min-width: 380px;
+    }
+    .reminder-btn:hover {
+      background: #b91c1c; transform: translateY(-6px);
+      box-shadow: 0 0 50px rgba(220,38,38,0.7);
+    }
+
+    @media (max-width: 768px) {
+      .school-name { font-size: 28px; }
+      .welcome-presidential h1 { font-size: 32px; }
+      .summary-value { font-size: 32px; }
+      .term-btn { padding: 12px 20px; font-size: 16px; }
+      table { font-size: 14px; }
+      th, td { padding: 12px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="navbar">
+    <button class="hamburger" id="hambtn"><i class="fas fa-bars"></i></button>
+    <div class="logo-row">
+      <img src="brilliant1.jpg" alt="Logo" class="logo">
+      <div class="school-name">Brilliant Success Footsteps Int'l Academy — Sokoto</div>
+      <div class="motto">“Justice in Every Naira • Excellence in Every Child”</div>
+      <div class="icons">
+        <i class="fas fa-pencil-alt"></i>
+        <i class="fas fa-book-open"></i>
+        <i class="fas fa-futbol"></i>
+        <i class="fas fa-shoe-prints"></i>
+        <i class="fas fa-balance-scale"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar" class="sidebar">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="classes.html"><i class="fas fa-chalkboard-teacher"></i> Classes</a>
+    <a href="students.html"><i class="fas fa-user-graduate"></i> Students</a>
+    <a href="admin_panel.html"><i class="fas fa-chart-line"></i> Financial Panel</a>
+    <a href="admin_users.html"><i class="fas fa-user-shield"></i> Manage Teachers</a>
+  </nav>
+
+  <!-- WELCOME -->
+  <div class="welcome-presidential">
+    <h1>As-Salamu Alaikum, Esteemed Administrator</h1>
+    <p>Financial Justice Panel — Every term calculated with perfect accuracy.</p>
+    <p><em>"Stand out firmly for justice, even if it be against yourselves..." — Qur’an 4:135</em></p>
+  </div>
+
+  <!-- TERM SELECTOR -->
+  <div class="term-selector">
+    <div class="term-btn active" data-term="all">All Terms</div>
+    <div class="term-btn" data-term="term1">1st Term</div>
+    <div class="term-btn" data-term="term2">2nd Term</div>
+    <div class="term-btn" data-term="term3">3rd Term</div>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-grid" id="summaryGrid">
+    <!-- Filled by JavaScript -->
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-container">
+    <div class="table-title" id="tableTitle">Loading Financial Justice Records...</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Term</th>
+            <th>Expected</th>
+            <th>Paid</th>
+            <th>Outstanding</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="7" style="padding:4rem; color:#ccc;">Loading data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <button class="reminder-btn" id="sendRemindersBtn">
+    Send Payment Reminders (<span id="totalDebt">₦0</span> Outstanding)
+  </button>
+
+  <!-- SCRIPTS -->
+  <script>
+    document.getElementById('hambtn').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('active');
+    });
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDm35w4edp811CsLhyiUSUqlkEt69_BWYU",
+      authDomain: "loginsysterm.firebaseapp.com",
+      projectId: "loginsysterm",
+      storageBucket: "loginsysterm.firebasestorage.app",
+      messagingSenderId: "181422276481",
+      appId: "1:181422276481:web:0a74d8a68c2446a4673280"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const summaryGrid = document.getElementById('summaryGrid');
+    const tableBody = document.getElementById('tableBody');
+    const tableTitle = document.getElementById('tableTitle');
+    const totalDebtEl = document.getElementById('totalDebt');
+    const termBtns = document.querySelectorAll('.term-btn');
+
+    let allStudents = [];
+    let currentTerm = 'all';
+
+    function formatMoney(n) { return '₦' + Number(n || 0).toLocaleString(); }
+
+    async function loadData() {
+      const snap = await getDocs(collection(db, "students"));
+      allStudents = [];
+
+      const termData = { all: {exp:0, paid:0, out:0}, term1: {exp:0, paid:0, out:0}, term2: {exp:0, paid:0, out:0}, term3: {exp:0, paid:0, out:0} };
+
+      snap.forEach(doc => {
+        const s = doc.data();
+        const fees = Number(s.feesPerTerm) || 0;
+
+        ['term1', 'term2', 'term3'].forEach(key => {
+          const t = s.terms?.[key] || { totalPaid: 0, outstanding: fees };
+          const paid = Number(t.totalPaid) || 0;
+          const out = Number(t.outstanding) || fees;
+
+          termData.all.exp += fees;
+          termData.all.paid += paid;
+          termData.all.out += out;
+
+          termData[key].exp += fees;
+          termData[key].paid += paid;
+          termData[key].out += out;
+
+          if (out > 0) {
+            allStudents.push({
+              id: s.studentId || 'N/A',
+              name: s.fullName || 'Unknown',
+              class: (s.className || s.classSlug || 'N/A').toUpperCase(),
+              term: key === 'term1' ? '1st Term' : key === 'term2' ? '2nd Term' : '3rd Term',
+              termKey: key,
+              expected: fees,
+              paid: paid,
+              outstanding: out
+            });
+          }
+        });
+      });
+
+      window.termData = termData;
+      allStudents.sort((a,b) => b.outstanding - a.outstanding);
+      renderView();
+    }
+
+    function renderView() {
+      const data = currentTerm === 'all' ? window.termData.all : window.termData[currentTerm];
+      const filtered = currentTerm === 'all' ? allStudents : allStudents.filter(s => s.termKey === currentTerm);
+
+      // Update Summary
+      summaryGrid.innerHTML = `
+        <div class="summary-card">
+          <div class="summary-value expected">${formatMoney(data.exp)}</div>
+          <div class="label">Total Expected</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-value paid">${formatMoney(data.paid)}</div>
+          <div class="label">Total Paid</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-value outstanding">${formatMoney(data.out)}</div>
+          <div class="label">Total Outstanding</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-value" style="color:#ffb400 !important;">${filtered.length}</div>
+          <div class="label">Students Owing</div>
+        </div>
+      `;
+
+      totalDebtEl.textContent = formatMoney(data.out);
+
+      // Update Table
+      const termName = currentTerm === 'all' ? 'All Terms' : 
+        currentTerm === 'term1' ? '1st Term' : 
+        currentTerm === 'term2' ? '2nd Term' : '3rd Term';
+
+      tableTitle.textContent = `Outstanding Students — ${termName} (${filtered.length} students)`;
+
+      tableBody.innerHTML = '';
+      if (filtered.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="7" style="padding:4rem; color:#0f0;">Alhamdulillah! No outstanding fees this term!</td></tr>`;
+      } else {
+        filtered.forEach(s => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${s.id}</td>
+            <td><strong>${s.name}</strong></td>
+            <td>${s.class}</td>
+            <td>${s.term}</td>
+            <td class="amount expected">${formatMoney(s.expected)}</td>
+            <td class="amount paid">${formatMoney(s.paid)}</td>
+            <td class="amount outstanding">${formatMoney(s.outstanding)}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+    }
+
+    termBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        termBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTerm = btn.dataset.term;
+        renderView();
+      });
+    });
+
+    loadData();
+  </script>
+</body>
+</html>

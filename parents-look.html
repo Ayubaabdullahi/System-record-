@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Parent Portal · Brilliant Footsteps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <style>
+    :root {
+      --brand: #003366;
+      --gold: #ffb400;
+      --success: #16a34a;
+      --danger: #ef4444;
+      --muted: #64748b;
+      --card: #ffffff;
+      --shadow: 0 12px 30px rgba(0,0,0,0.08);
+      --light: #f8fafc;
+      --glow: 0 0 25px rgba(255,180,0,.4);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e0f2fe, #f0fdf4);
+      color: #1e293b;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* PREMIUM HEADER WITH HAMBURGER */
+    header.navbar {
+      background: linear-gradient(135deg, var(--brand), #001f3f);
+      color: white;
+      padding: 1.8rem 1.2rem;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,.3);
+      text-align: center;
+    }
+    header::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(255,180,0,.15), transparent 70%);
+      pointer-events: none;
+    }
+    .hamburger {
+      position: absolute; left: 1.2rem; top: 2rem;
+      background: var(--gold); color: var(--brand);
+      border: none; width: 56px; height: 56px; border-radius: 50%;
+      font-size: 24px; cursor: pointer; z-index: 101;
+      box-shadow: 0 6px 20px rgba(0,0,0,.3); transition: .4s;
+    }
+    .hamburger:hover { transform: scale(1.1); box-shadow: var(--glow); }
+
+    /* SIDEBAR - YANZU YANA NAN KUMA YANA AIKI! */
+    nav.sidebar {
+      position: fixed;
+      left: -340px;
+      top: 0;
+      width: 340px;
+      height: 100%;
+      background: linear-gradient(135deg, var(--brand), #001f3f);
+      padding-top: 120px;
+      transition: .4s ease;
+      z-index: 100;
+      box-shadow: 5px 0 30px rgba(0,0,0,.4);
+    }
+    nav.sidebar.active { left: 0; }
+    nav.sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 1.3rem 2rem;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: .3s;
+    }
+    nav.sidebar a i { width: 28px; text-align: center; }
+    nav.sidebar a:hover { background: rgba(255,180,0,.25); padding-left: 3rem; }
+
+    .logo-row { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .logo { height: 80px; border-radius: 20px; border: 4px solid var(--gold); box-shadow: var(--glow); }
+    .school-name { font-size: 28px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0,0,0,.4); }
+    .tagline { opacity: 0.9; font-size: 16px; }
+    .motto { color: var(--gold); font-weight: 700; margin: 12px 0; letter-spacing: 1px; font-size: 18px; }
+    .icons { display: flex; gap: 20px; font-size: 22px; color: var(--gold); margin-top: 8px; }
+
+    /* GREETINGS MESSAGE */
+    .greeting {
+      background: var(--card);
+      padding: 1.8rem;
+      margin: 2rem auto;
+      max-width: 900px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      border-left: 6px solid var(--gold);
+    }
+    .greeting h2 { color: var(--brand); margin-bottom: 0.8rem; }
+    .greeting p { color: var(--muted); line-height: 1.6; }
+
+    .container { max-width: 900px; margin: 0 auto 2rem; padding: 0 1rem; }
+    .search-card { background: var(--card); padding: 2rem; border-radius: 20px; box-shadow: var(--shadow); text-align: center; margin-bottom: 2rem; }
+    .search-title { font-size: 22px; font-weight: 700; color: var(--brand); margin-bottom: 1rem; }
+    .search-input { width: 100%; max-width: 420px; padding: 14px 18px; font-size: 16px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 1rem; transition: .3s; }
+    .search-input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px rgba(0,51,102,0.1); }
+    .search-btn { background: var(--brand); color: white; border: none; padding: 14px 32px; font-weight: 700; font-size: 16px; border-radius: 12px; cursor: pointer; transition: .3s; }
+    .search-btn:hover { background: #002244; transform: translateY(-2px); }
+
+    .result-card { background: var(--card); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); display: none; }
+    .result-header { background: linear-gradient(45deg, var(--brand), #00509e); color: white; padding: 1.5rem; text-align: center; }
+    .student-name { font-size: 24px; font-weight: 800; }
+    .student-id { font-size: 14px; opacity: 0.9; margin-top: 0.5rem; }
+    .result-body { padding: 1.5rem; }
+    .section { margin-bottom: 1.8rem; }
+    .section-title { font-size: 18px; font-weight: 700; color: var(--brand); margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .info-item { background: var(--light); padding: 1rem; border-radius: 12px; border-left: 4px solid var(--gold); }
+    .info-label { font-size: 13px; color: var(--muted); font-weight: 600; }
+    .info-value { font-size: 16px; font-weight: 700; margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 14px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f8fafc; color: var(--muted); font-weight: 700; }
+    .amount { text-align: right; font-weight: 700; }
+    .paid { color: var(--success); }
+    .owing { color: var(--danger); }
+    .no-result { text-align: center; padding: 3rem; color: var(--muted); font-size: 18px; background: var(--card); border-radius: 20px; box-shadow: var(--shadow); }
+    .print-btn { background: var(--success); color: white; border: none; padding: 12px 24px; font-weight: 700; border-radius: 12px; cursor: pointer; float: right; margin-top: 1rem; }
+    .print-btn:hover { background: #138843; }
+    .loading { text-align: center; padding: 2rem; color: var(--brand); font-weight: 600; font-size: 18px; }
+
+    @media (max-width: 600px) {
+      .info-grid { grid-template-columns: 1fr; }
+      .print-btn { width: 100%; float: none; display: block; margin: 1rem auto 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PREMIUM HEADER -->
+  <header class="navbar">
+    <button class="hamburger" id="hambtn">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="logo-row">
+      <img src="brilliant1.jpg" alt="Brilliant Logo" class="logo">
+      <div class="school-name">Brilliant Footsteps Intnl Academy — Sokoto</div>
+      <div class="tagline">Parent Portal – Secure Access to Your Child’s Record</div>
+      <div class="motto">“Building Tomorrow's Leaders Through Excellence & Discipline”</div>
+      <div class="icons">
+        <i class="fas fa-pencil-alt" title="Education"></i>
+        <i class="fas fa-book-open" title="Knowledge"></i>
+        <i class="fas fa-futbol" title="Sports"></i>
+        <i class="fas fa-shoe-prints" title="Footsteps"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR - YANZU YANA BUƊEWA DA RUFEWA -->
+  <nav id="sidebar" class="sidebar">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="classes.html"><i class="fas fa-chalkboard-teacher"></i> Classes</a>
+    <a href="students.html"><i class="fas fa-user-graduate"></i> Students</a>
+    <a href="payments.html"><i class="fas fa-money-bill-wave"></i> Payments</a>
+    <a href="payment-history.html"><i class="fas fa-history"></i> Payment History</a>
+    <a href="parents_look.html"><i class="fas fa-users"></i> Parent Portal</a>
+    <a href="admin_panel.html"><i class="fas fa-chart-line"></i> Admin Dashboard</a>
+  </nav>
+
+  <!-- GREETINGS TO PARENTS -->
+  <div class="greeting">
+    <h2>Welcome, Dear Parent!</h2>
+    <p>Thank you for trusting us with your child's education. Here you can view fees status, payment history, and academic records securely anytime.</p>
+    <p><strong>Enter your child's Student ID below to continue.</strong></p>
+  </div>
+
+  <div class="container">
+    <div class="search-card">
+      <h2 class="search-title">Search Your Child's Record</h2>
+      <input type="text" id="studentIdInput" class="search-input" placeholder="e.g. pri1a 001" autocomplete="off">
+      <button id="searchBtn" class="search-btn">Search Student</button>
+      <p style="margin-top:1rem; font-size:14px; color:var(--muted);">
+        Example: <code style="background:#f1f5f9;padding:4px 8px;border-radius:6px;">pri1a 001</code> • <code style="background:#f1f5f9;padding:4px 8px;border-radius:6px;">nur2b 005</code>
+      </p>
+    </div>
+
+    <div id="loadingMsg" class="loading" style="display:none;">Searching for student record...</div>
+
+    <div id="resultCard" class="result-card">
+      <div class="result-header">
+        <div id="studentName" class="student-name">Loading...</div>
+        <div id="studentId" class="student-id"></div>
+      </div>
+      <div class="result-body">
+        <div class="section">
+          <div class="section-title">Registration Information</div>
+          <div id="regInfo" class="info-grid"></div>
+        </div>
+        <div class="section">
+          <div class="section-title">Fees Summary (Per Term)</div>
+          <div id="feesSummary" class="info-grid"></div>
+        </div>
+        <div class="section">
+          <div class="section-title">Payment History</div>
+          <table>
+            <thead>
+              <tr><th>Term</th><th>Date</th><th>Amount</th><th>Method</th></tr>
+            </thead>
+            <tbody id="paymentBody"></tbody>
+          </table>
+          <button class="print-btn" onclick="window.print()">Print Report</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="noResult" class="no-result" style="display:none;">
+      <p>No student found with this ID.</p>
+      <p style="font-size:14px; margin-top:1rem;">Please check the Student ID and try again.<br>Contact the school admin if the problem continues.</p>
+    </div>
+  </div>
+
+  <!-- HAMBURGER TOGGLE SCRIPT -->
+  <script>
+    document.getElementById('hambtn').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('active');
+    });
+  </script>
+
+  <!-- FULL MODERN FIREBASE IMPORT (100% working) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDm35w4edp811CsLhyiUSUqlkEt69_BWYU",
+      authDomain: "loginsysterm.firebaseapp.com",
+      projectId: "loginsysterm",
+      storageBucket: "loginsysterm.firebasestorage.app",
+      messagingSenderId: "181422276481",
+      appId: "1:181422276481:web:0a74d8a68c2446a4673280"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const studentIdInput = document.getElementById('studentIdInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const resultCard = document.getElementById('resultCard');
+    const noResult = document.getElementById('noResult');
+    const loadingMsg = document.getElementById('loadingMsg');
+    const studentNameEl = document.getElementById('studentName');
+    const studentIdEl = document.getElementById('studentId');
+    const regInfo = document.getElementById('regInfo');
+    const feesSummary = document.getElementById('feesSummary');
+    const paymentBody = document.getElementById('paymentBody');
+
+    function formatMoney(n) { return '₦' + Number(n || 0).toLocaleString(); }
+    function formatDate(ts) {
+      if (!ts) return 'Not recorded';
+      if (ts.toDate) return ts.toDate().toLocaleDateString('en-GB');
+      return new Date(ts).toLocaleDateString('en-GB');
+    }
+
+    async function searchStudent() {
+      const input = studentIdInput.value.trim();
+      if (!input) return alert('Please enter Student ID');
+
+      const studentId = input.toLowerCase();
+      const docId = studentId.replace(/\s+/g, '_');
+
+      resultCard.style.display = 'none';
+      noResult.style.display = 'none';
+      loadingMsg.style.display = 'block';
+
+      try {
+        const studentSnap = await getDoc(doc(db, 'students', docId));
+        if (!studentSnap.exists()) {
+          loadingMsg.style.display = 'none';
+          noResult.style.display = 'block';
+          return;
+        }
+
+        const s = studentSnap.data();
+
+        studentNameEl.textContent = s.fullName || 'Unknown Student';
+        studentIdEl.textContent = s.studentId || studentId;
+
+        regInfo.innerHTML = `
+          <div class="info-item"><div class="info-label">Class</div><div class="info-value">${s.className || s.classSlug?.toUpperCase() || '-'}</div></div>
+          <div class="info-item"><div class="info-label">Gender</div><div class="info-value">${s.gender || '-'}</div></div>
+          <div class="info-item"><div class="info-label">Admission</div><div class="info-value">${formatDate(s.admissionDate)}</div></div>
+          <div class="info-item"><div class="info-label">Parent</div><div class="info-value">${s.parentName || '-'}</div></div>
+          <div class="info-item"><div class="info-label">Phone</div><div class="info-value">${s.parentPhone || '-'}</div></div>
+          <div class="info-item"><div class="info-label">Fees/Term</div><div class="info-value">${formatMoney(s.feesPerTerm)}</div></div>
+        `;
+
+        const termNames = { term1: '1st Term', term2: '2nd Term', term3: '3rd Term' };
+        feesSummary.innerHTML = '';
+        ['term1', 'term2', 'term3'].forEach(key => {
+          const t = s.terms?.[key] || { totalPaid: 0, outstanding: s.feesPerTerm || 0 };
+          const div = document.createElement('div');
+          div.className = 'info-item';
+          div.innerHTML = `<div class="info-label">${termNames[key]}</div>
+            <div class="info-value">Paid: <span class="paid">${formatMoney(t.totalPaid)}</span><br>
+            Due: <span class="owing">${formatMoney(t.outstanding)}</span></div>`;
+          feesSummary.appendChild(div);
+        });
+
+        paymentBody.innerHTML = '<tr><td colspan="4">Loading payments...</td></tr>';
+        const q = query(collection(db, 'payments'), where('studentId', '==', s.studentId), orderBy('createdAt', 'desc'));
+        const paySnap = await getDocs(q);
+
+        if (paySnap.empty) {
+          paymentBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:2rem; color:var(--muted);">No payments recorded yet.</td></tr>';
+        } else {
+          paymentBody.innerHTML = '';
+          paySnap.forEach(doc => {
+            const p = doc.data();
+            const row = document.createElement('tr');
+            const termName = p.term === 1 ? '1st Term' : p.term === 2 ? '2nd Term' : '3rd Term';
+            row.innerHTML = `<td>${termName}</td><td>${formatDate(p.createdAt)}</td><td class="amount">${formatMoney(p.amount)}</td><td>${p.method || 'Cash'}</td>`;
+            paymentBody.appendChild(row);
+          });
+        }
+
+        loadingMsg.style.display = 'none';
+        resultCard.style.display = 'block';
+
+      } catch (err) {
+        console.error(err);
+        loadingMsg.style.display = 'none';
+        alert('Error: ' + err.message);
+      }
+    }
+
+    searchBtn.onclick = searchStudent;
+    studentIdInput.addEventListener('keypress', e => { if (e.key === 'Enter') searchStudent(); });
+    window.addEventListener('load', () => studentIdInput.focus());
+  </script>
+</body>
+</html>

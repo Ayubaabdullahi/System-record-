@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Student · Brilliant Footsteps Intnl Academy - PRO</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <style>
+    :root{
+      --brand:#003366; --accent:#0099cc; --ok:#16a34a; --err:#ef4444; --muted:#6b7280; --card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Poppins',system-ui,Segoe UI,Roboto,Arial;background:#f6f8fc;color:#0f172a;-webkit-font-smoothing:antialiased}
+    header.navbar{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:linear-gradient(90deg,var(--brand),var(--accent));color:#fff}
+    .logo-row{display:flex;align-items:center;gap:12px}
+    .logo{width:52px;height:52px;border-radius:8px;object-fit:cover;border:2px solid rgba(255,255,255,0.12)}
+    .school-title{font-size:18px;font-weight:700;line-height:1}
+    .muted{color:rgba(255,255,255,0.85);font-size:13px}
+    .hamburger{background:none;border:0;color:#fff;font-size:22px;cursor:pointer}
+    nav.sidebar{position:fixed;left:-260px;top:0;height:100%;width:260px;background:var(--brand);color:#fff;padding-top:70px;transition:left .25s ease;z-index:120}
+    nav.sidebar.active{left:0}
+    nav.sidebar a{display:block;padding:14px 18px;color:#fff;text-decoration:none;font-weight:600}
+    nav.sidebar a:hover{background:#064a87}
+    main.container{padding:20px;max-width:1200px;margin:18px auto}
+    .panel{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 22px rgba(2,6,23,0.04);margin-bottom:18px}
+    .h1{font-size:20px;margin:0 0 6px 0;color:var(--brand);font-weight:800}
+    .small-muted{color:var(--muted);font-size:13px}
+    .controls{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+    .btn{border:0;padding:10px 12px;border-radius:8px;font-weight:700;cursor:pointer}
+    .btn.add{background:var(--ok);color:#fff}
+    .btn.primary{background:var(--brand);color:#fff}
+    .btn.warn{background:#f59e0b;color:#fff}
+    .btn.danger{background:var(--err);color:#fff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:10px}
+    .seat{background:var(--card);padding:12px;border-radius:12px;border:1px solid rgba(2,6,23,0.04);display:flex;gap:12px;align-items:center;box-shadow:0 6px 18px rgba(2,6,23,0.04)}
+    .avatar{width:64px;height:64px;border-radius:10px;background:linear-gradient(180deg,#e6f0fb,#ffffff);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--brand);font-size:18px}
+    .info{flex:1}
+    .name{font-weight:800;color:var(--brand);margin-bottom:4px}
+    .meta{font-size:13px;color:var(--muted)}
+    .seat-actions{display:flex;flex-direction:column;gap:8px}
+    .seat-actions button{padding:8px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+    .seat-actions .view{background:#0ea5e9;color:#fff}
+    .seat-actions .pay{background:#10b981;color:#fff}
+    .seat-actions .edit{background:#f59e0b;color:#fff}
+    .seat-actions .del{background:#ef4444;color:#fff}
+    .modal{display:none;position:fixed;inset:0;background:rgba(2,6,23,0.45);z-index:220;align-items:center;justify-content:center;padding:18px}
+    .modal.show{display:flex}
+    .card{background:#fff;padding:18px;border-radius:12px;max-width:920px;width:100%;max-height:92vh;overflow:auto}
+    .form-row{margin-top:10px}
+    label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}
+    input[type="text"], input[type="tel"], input[type="date"], input[type="number"], input[type="email"], select {width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef8;font-size:14px}
+    .two{display:flex;gap:10px}
+    .tx-muted{font-size:13px;color:var(--muted)}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:8px;border-bottom:1px solid #f1f5f9;text-align:left;font-size:14px}
+    th{color:var(--muted);font-weight:700}
+    .notif{position:fixed;right:18px;top:18px;padding:10px 14px;border-radius:10px;color:#fff;display:none;z-index:300}
+    .notif.show{display:block}
+    .notif.ok{background:var(--ok)}
+    .notif.err{background:var(--err)}
+    .notif.info{background:var(--accent)}
+    footer.small{max-width:1200px;margin:8px auto 30px auto;color:var(--muted);font-size:13px;text-align:center}
+    @media (max-width:700px){
+      .two{flex-direction:column}
+      .seat{flex-direction:column;align-items:flex-start}
+      .seat-actions{flex-direction:row;width:100%;justify-content:space-between}
+    }
+  </style>
+</head>
+<body>
+
+  <div id="notif" class="notif"></div>
+
+  <header class="navbar">
+    <div class="logo-row">
+      <img class="logo" src="brilliant1.jpg" alt="Brilliant logo">
+      <div>
+        <div class="school-title">Brilliant Footsteps Intnl Academy — Sokoto</div>
+        <div class="muted">Students · Professional Edition (PRO)</div>
+      </div>
+    </div>
+    <div>
+      <button class="hamburger" id="hambtn" aria-label="menu">Menu</button>
+    </div>
+  </header>
+
+  <nav id="sidebar" class="sidebar" aria-hidden="true">
+    <a href="index.html">Home</a>
+    <a href="admin_panel.html">Dashboard</a>
+    <a href="classes.html">Classes</a>
+    <a href="students.html">Students</a>
+    <a href="payments.html">Payments</a>
+    <a href="payment-history.html">Payment History</a>
+    <a href="parents_look.html">Parents</a>
+    <a href="users.html">Users</a>
+    <a href="settings.html">Settings</a>
+    <a href="#" id="logoutLink">Logout</a>
+  </nav>
+
+  <main class="container">
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div>
+          <div class="h1">Class Seats — Students (PRO)</div>
+          <div class="small-muted">Create students, view per-term balances, add payments, edit & delete — professional bank-style accuracy.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn primary" id="currentTermBtn">Current Term: Loading…</button>
+          <select id="classSelect" style="padding:8px;border-radius:8px;border:1px solid #e6eef8">
+            <option value="">Loading classes…</option>
+          </select>
+          <button class="btn add" id="openAddStudent">+ Add Student</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Students in class</h3>
+        <div class="tx-muted">Click View / Add Payment / Edit / Delete</div>
+      </div>
+      <div id="seatsGrid" class="grid" style="margin-top:12px"></div>
+    </section>
+  </main>
+
+  <footer class="small">© Brilliant Footsteps Intnl Academy — Sokoto</footer>
+
+  <!-- MODALS -->
+  <div id="modalAdd" class="modal" role="dialog" aria-modal="true">
+    <div class="card">
+      <h3 id="addTitle">Add New Student</h3>
+      <div class="form-row">
+        <label>Full name</label>
+        <input id="s_name" type="text" placeholder="e.g. Ayuba Abdullahi">
+      </div>
+      <div class="two">
+        <div class="form-row" style="flex:1">
+          <label>Gender</label>
+          <select id="s_gender"><option value="Male">Male</option><option value="Female">Female</option></select>
+        </div>
+        <div class="form-row" style="flex:1">
+          <label>Admission Date</label>
+          <input id="s_admit" type="date">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Parent / Guardian name</label>
+        <input id="s_parent" type="text" placeholder="e.g. Musa Abdullahi">
+      </div>
+      <div class="form-row">
+        <label>Parent phone</label>
+        <input id="s_phone" type="tel" placeholder="e.g. 08061234567">
+      </div>
+      <div class="form-row">
+        <label>Parent Email (Required)</label>
+        <input id="s_parent_email" type="email" placeholder="e.g. parent@gmail.com" required>
+      </div>
+      <div class="form-row">
+        <label>Parent Email 2 (Optional)</label>
+        <input id="s_parent_email2" type="email" placeholder="e.g. backup@gmail.com">
+      </div>
+      <div class="form-row">
+        <label>Fees per term (₦)</label>
+        <input id="s_fees" type="number" placeholder="e.g. 35000">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn add" id="saveStudentBtn">Save Student</button>
+        <button class="btn" id="cancelAdd">Cancel</button>
+      </div>
+      <div class="tx-muted" style="margin-top:8px">Note: Student ID auto-generated as <strong>class + space + 3-digit serial</strong> (e.g. <em>pri1a 001</em>).</div>
+    </div>
+  </div>
+
+  <div id="modalView" class="modal" role="dialog" aria-modal="true">
+    <div class="card" id="viewCard"></div>
+  </div>
+
+  <div id="modalPay" class="modal" role="dialog" aria-modal="true">
+    <div class="card">
+      <h3>Add Payment</h3>
+      <div class="form-row">
+        <label>Student</label>
+        <div id="payStudentInfo" class="tx-muted"></div>
+      </div>
+      <div class="two">
+        <div class="form-row" style="flex:1">
+          <label>Term</label>
+          <select id="payTerm"><option value="1">1st Term</option><option value="2">2nd Term</option><option value="3">3rd Term</option></select>
+        </div>
+        <div class="form-row" style="flex:1">
+          <label>Amount (₦)</label>
+          <input id="payAmount" type="number" placeholder="e.g. 15000">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Payment Method</label>
+        <select id="payMethod"><option value="Cash">Cash</option><option value="Bank Transfer">Bank Transfer</option><option value="POS">POS</option></select>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn add" id="savePaymentBtn">Save Payment & Send Email</button>
+        <button class="btn" id="cancelPay">Cancel</button>
+      </div>
+      <div class="tx-muted" style="margin-top:8px">Payments update the selected term only. All calculations are automatic and recorded.</div>
+    </div>
+  </div>
+
+  <div id="modalConfirm" class="modal" role="dialog" aria-modal="true">
+    <div class="card" id="confirmCard">
+      <h3>Are you sure?</h3>
+      <div id="confirmText" class="tx-muted">This action cannot be undone.</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn danger" id="confirmDeleteBtn">Delete</button>
+        <button class="btn" id="cancelConfirmBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+     (function(){
+        emailjs.init({
+          publicKey: "V7jD7qsrYg99np2V5"
+        });
+     })();
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import {
+      getFirestore, collection, doc, setDoc, getDoc, getDocs,
+      query, where, orderBy, onSnapshot, serverTimestamp, addDoc,
+      updateDoc, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDm35w4edp811CsLhyiUSUqlkEt69_BWYU",
+      authDomain: "loginsysterm.firebaseapp.com",
+      projectId: "loginsysterm",
+      storageBucket: "loginsysterm.firebasestorage.app",
+      messagingSenderId: "181422276481",
+      appId: "1:181422276481:web:0a74d8a68c2446a4673280",
+      measurementId: "G-H4SYPENMZT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // UI refs
+    const sidebar = document.getElementById('sidebar');
+    const hambtn = document.getElementById('hambtn');
+    const classSelect = document.getElementById('classSelect');
+    const openAddStudent = document.getElementById('openAddStudent');
+    const modalAdd = document.getElementById('modalAdd');
+    const cancelAdd = document.getElementById('cancelAdd');
+    const saveStudentBtn = document.getElementById('saveStudentBtn');
+    const seatsGrid = document.getElementById('seatsGrid');
+    const notif = document.getElementById('notif');
+    const modalView = document.getElementById('modalView');
+    const viewCard = document.getElementById('viewCard');
+    const modalPay = document.getElementById('modalPay');
+    const payStudentInfo = document.getElementById('payStudentInfo');
+    const payTerm = document.getElementById('payTerm');
+    const payAmount = document.getElementById('payAmount');
+    const payMethod = document.getElementById('payMethod');
+    const savePaymentBtn = document.getElementById('savePaymentBtn');
+    const cancelPay = document.getElementById('cancelPay');
+    const currentTermBtn = document.getElementById('currentTermBtn');
+    const modalConfirm = document.getElementById('modalConfirm');
+    const confirmText = document.getElementById('confirmText');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+
+    const s_name = document.getElementById('s_name');
+    const s_gender = document.getElementById('s_gender');
+    const s_admit = document.getElementById('s_admit');
+    const s_parent = document.getElementById('s_parent');
+    const s_phone = document.getElementById('s_phone');
+    const s_parent_email = document.getElementById('s_parent_email');
+    const s_parent_email2 = document.getElementById('s_parent_email2');
+    const s_fees = document.getElementById('s_fees');
+    const addTitle = document.getElementById('addTitle');
+
+    let currentClass = '';
+    let editingDocId = null;
+    let deleteTarget = null;
+    let paymentsUnsubscribe = null;
+
+    function showNotif(text, type='ok'){
+      notif.textContent = text;
+      notif.className = 'notif show ' + (type==='err' ? 'err' : type==='info' ? 'info' : 'ok');
+      setTimeout(()=> notif.className = 'notif', 3000);
+    }
+    function slugifyClass(name){ return name.trim().toLowerCase().replace(/[^a-z0-9]/g,''); }
+    function pad3(n){ return String(n).padStart(3,'0'); }
+    function docIdFromStudentId(studentId){ return studentId.replace(/\s+/g,'_'); }
+
+    hambtn.addEventListener('click', ()=> sidebar.classList.toggle('active'));
+    document.getElementById('logoutLink').addEventListener('click', (e)=> { e.preventDefault(); showNotif('Logout not implemented here', 'info'); });
+
+    const classesCol = collection(db,'classes');
+    onSnapshot(query(classesCol, orderBy('name')), snap => {
+      classSelect.innerHTML = '<option value="">-- Select class --</option>';
+      snap.forEach(d => {
+        const nm = d.data().name;
+        const slug = d.data().slug || slugifyClass(nm);
+        const opt = document.createElement('option');
+        opt.value = slug;
+        opt.textContent = nm;
+        classSelect.appendChild(opt);
+      });
+    }, err => {
+      console.error(err);
+      showNotif('Unable to load classes', 'err');
+    });
+
+    async function loadCurrentTerm(){
+      try{
+        const cfgRef = doc(db,'config','current');
+        const cfgSnap = await getDoc(cfgRef);
+        if(cfgSnap.exists()){
+          const t = Number(cfgSnap.data().term || 1);
+          setCurrentTermUI(t);
+        } else {
+          setCurrentTermUI(1);
+        }
+      }catch(e){
+        console.error(e);
+        setCurrentTermUI(1);
+      }
+    }
+    function setCurrentTermUI(t){
+      currentTermBtn.textContent = 'Current Term: ' + (t===1? '1st' : t===2? '2nd' : '3rd');
+      currentTermBtn.dataset.term = t;
+    }
+    async function cycleCurrentTerm(){
+      try{
+        const cur = Number(currentTermBtn.dataset.term || 1);
+        const next = cur === 3 ? 1 : cur + 1;
+        const cfgRef = doc(db,'config','current');
+        await setDoc(cfgRef, { term: next, updatedAt: serverTimestamp() }, { merge: true });
+        setCurrentTermUI(next);
+        showNotif('Current term set to ' + (next===1? '1st' : next===2? '2nd' : '3rd'), 'info');
+      }catch(e){
+        console.error(e); showNotif('Unable to change term', 'err');
+      }
+    }
+    currentTermBtn.addEventListener('click', cycleCurrentTerm);
+
+    openAddStudent.addEventListener('click', ()=>{
+      if(!classSelect.value){ showNotif('Select a class first','err'); return; }
+      editingDocId = null;
+      addTitle.textContent = 'Add New Student';
+      s_name.value='';
+      s_gender.value='Male';
+      s_admit.value='';
+      s_parent.value='';
+      s_phone.value='';
+      s_parent_email.value='';
+      s_parent_email2.value='';
+      s_fees.value='';
+      modalAdd.classList.add('show');
+      setTimeout(()=> s_name.focus(), 120);
+    });
+    cancelAdd.addEventListener('click', ()=> modalAdd.classList.remove('show'));
+    window.addEventListener('click', (e)=> {
+      if(e.target === modalAdd) modalAdd.classList.remove('show');
+      if(e.target === modalView) closeView();
+      if(e.target === modalPay) modalPay.classList.remove('show');
+      if(e.target === modalConfirm) modalConfirm.classList.remove('show');
+    });
+
+    async function nextSerialForClass(slug){
+      const q = query(collection(db,'students'), where('classSlug','==', slug));
+      const snap = await getDocs(q);
+      let max = 0;
+      snap.forEach(d=>{
+        const sid = d.data().studentId || '';
+        const parts = sid.split(' ');
+        const num = parts[1] ? parseInt(parts[1],10) : 0;
+        if(!isNaN(num) && num > max) max = num;
+      });
+      return max + 1;
+    }
+
+    saveStudentBtn.addEventListener('click', async ()=>{
+      const classSlug = classSelect.value;
+      const classNameText = classSelect.options[classSelect.selectedIndex]?.text || '';
+      const fullName = (s_name.value || '').trim();
+      const parentEmail = (s_parent_email.value || '').trim();
+      if(!classSlug || !fullName || !parentEmail) return showNotif('Please select class, enter name and email','err');
+
+      const gender = s_gender.value;
+      const admit = s_admit.value || new Date().toISOString().slice(0,10);
+      const parent = s_parent.value.trim();
+      const phone = s_phone.value.trim();
+      const parentEmail2 = s_parent_email2.value.trim();
+      const feesPerTerm = Number(s_fees.value) || 0;
+
+      try{
+        if(editingDocId){
+          const sRef = doc(db,'students', editingDocId);
+          const updateData = {
+            fullName, gender, admissionDate: admit, parentName: parent, parentPhone: phone, parentEmail, parentEmail2, feesPerTerm
+          };
+          const sSnap = await getDoc(sRef);
+          if(sSnap.exists()){
+            const s = sSnap.data();
+            const terms = s.terms || {};
+            ['term1','term2','term3'].forEach(tk=>{
+              if(terms[tk]){
+                terms[tk].feesRequired = Number(feesPerTerm);
+                const totalPaid = Number(terms[tk].totalPaid || 0);
+                terms[tk].outstanding = Math.max(0, Number(feesPerTerm) - totalPaid);
+              } else {
+                terms[tk] = { feesRequired: Number(feesPerTerm), totalPaid: 0, outstanding: Number(feesPerTerm) };
+              }
+            });
+            updateData.terms = terms;
+          }
+          await updateDoc(sRef, updateData);
+          showNotif('Student updated', 'ok');
+          modalAdd.classList.remove('show');
+          editingDocId = null;
+          if (classSelect.value) loadStudentsForClass(classSelect.value);
+        } else {
+          const serial = await nextSerialForClass(classSlug);
+          const idSerial = pad3(serial);
+          const studentId = `${classSlug} ${idSerial}`;
+          const docId = docIdFromStudentId(studentId);
+          const sRef = doc(db,'students', docId);
+
+          const terms = {
+            term1: { feesRequired: Number(feesPerTerm), totalPaid: 0, outstanding: Number(feesPerTerm) },
+            term2: { feesRequired: Number(feesPerTerm), totalPaid: 0, outstanding: Number(feesPerTerm) },
+            term3: { feesRequired: Number(feesPerTerm), totalPaid: 0, outstanding: Number(feesPerTerm) }
+          };
+
+          await setDoc(sRef, {
+            studentId, classSlug, className: classNameText, fullName, gender,
+            admissionDate: admit, parentName: parent, parentPhone: phone,
+            parentEmail, parentEmail2, feesPerTerm: Number(feesPerTerm), terms, createdAt: serverTimestamp()
+          });
+          showNotif(`Student created: ${studentId}`, 'ok');
+          modalAdd.classList.remove('show');
+          if (classSelect.value) loadStudentsForClass(classSelect.value);
+        }
+      }catch(e){
+        console.error(e); showNotif('Error saving student','err');
+      }
+    });
+
+    let studentsListener = null;
+    function unsubscribeStudents(){
+      if(studentsListener) { studentsListener(); studentsListener = null; }
+      if(paymentsUnsubscribe){ paymentsUnsubscribe(); paymentsUnsubscribe = null; }
+    }
+
+    async function loadStudentsForClass(slug){
+      unsubscribeStudents();
+      currentClass = slug;
+      seatsGrid.innerHTML = '';
+      if(!slug) return;
+      try{
+        const q = query(collection(db,'students'), where('classSlug','==', slug), orderBy('studentId'));
+        studentsListener = onSnapshot(q, snap=>{
+          seatsGrid.innerHTML = '';
+          if(snap.empty){ seatsGrid.innerHTML = '<div class="tx-muted">No students in this class yet.</div>'; return; }
+          snap.forEach(docSnap=>{
+            const s = docSnap.data();
+            const card = document.createElement('div');
+            card.className = 'seat';
+
+            const avatar = document.createElement('div'); avatar.className='avatar';
+            const initials = s.fullName.split(' ').map(x=>x[0]||'').slice(0,2).join('').toUpperCase();
+            avatar.textContent = initials;
+
+            const info = document.createElement('div'); info.className='info';
+            const name = document.createElement('div'); name.className='name'; name.textContent = s.fullName;
+            const meta = document.createElement('div'); meta.className='meta'; meta.innerHTML = `${s.studentId} · ${s.className}`;
+            info.appendChild(name); info.appendChild(meta);
+
+            const actions = document.createElement('div'); actions.className='seat-actions';
+            const viewBtn = document.createElement('button'); viewBtn.className='view'; viewBtn.textContent='View Record';
+            const payBtn = document.createElement('button'); payBtn.className='pay'; payBtn.textContent='Add Payment';
+            const editBtn = document.createElement('button'); editBtn.className='edit'; editBtn.textContent='Edit';
+            const delBtn = document.createElement('button'); delBtn.className='del'; delBtn.textContent='Delete';
+
+            viewBtn.onclick = ()=> openViewRecord(docSnap.id);
+            payBtn.onclick = ()=> openAddPayment(docSnap.id);
+            editBtn.onclick = ()=> openEditStudent(docSnap.id);
+            delBtn.onclick = ()=> confirmDeleteStudent(docSnap.id, s.fullName);
+
+            actions.appendChild(viewBtn); actions.appendChild(payBtn); actions.appendChild(editBtn); actions.appendChild(delBtn);
+
+            card.appendChild(avatar); card.appendChild(info); card.appendChild(actions);
+            seatsGrid.appendChild(card);
+          });
+        }, err=>{
+          console.error(err);
+          showNotif('Unable to load students','err');
+        });
+      }catch(e){
+        console.error(e); showNotif('Error loading students','err');
+      }
+    }
+
+    classSelect.addEventListener('change', ()=> {
+      const slug = classSelect.value;
+      loadStudentsForClass(slug);
+    });
+
+    async function openViewRecord(docId){
+      try{
+        const sRef = doc(db,'students', docId);
+        const sSnap = await getDoc(sRef);
+        if(!sSnap.exists()){ showNotif('Student not found','err'); return; }
+        const s = sSnap.data();
+        renderStudentView(s, docId);
+        modalView.classList.add('show');
+      }catch(e){ console.error(e); showNotif('Error fetching student','err'); }
+    }
+
+    function renderStudentView(s, docId){
+      const feesFormat = n => '₦' + Number(n || 0).toLocaleString();
+      let html = `<div style="display:flex;justify-content:space-between;align-items:start;gap:12px">
+        <div>
+          <h2 style="margin:0">${s.fullName}</h2>
+          <div class="tx-muted">${s.studentId} · ${s.className}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="tx-muted">Admission: ${s.admissionDate || '-'}</div>
+          <div class="tx-muted">Parent: ${s.parentName || '-'} · ${s.parentPhone || '-'}</div>
+        </div>
+      </div>`;
+
+      html += `<div style="margin-top:12px"><strong>Per-Term Summary</strong>`;
+      html += `<table><thead><tr><th>Term</th><th>Fees</th><th>Paid</th><th>Outstanding</th></tr></thead><tbody>`;
+      const t1 = s.terms?.term1 || {feesRequired:0,totalPaid:0,outstanding:0};
+      const t2 = s.terms?.term2 || {feesRequired:0,totalPaid:0,outstanding:0};
+      const t3 = s.terms?.term3 || {feesRequired:0,totalPaid:0,outstanding:0};
+      html += `<tr><td>1st</td><td>${feesFormat(t1.feesRequired)}</td><td>${feesFormat(t1.totalPaid)}</td><td>${feesFormat(t1.outstanding)}</td></tr>`;
+      html += `<tr><td>2nd</td><td>${feesFormat(t2.feesRequired)}</td><td>${feesFormat(t2.totalPaid)}</td><td>${feesFormat(t2.outstanding)}</td></tr>`;
+      html += `<tr><td>3rd</td><td>${feesFormat(t3.feesRequired)}</td><td>${feesFormat(t3.totalPaid)}</td><td>${feesFormat(t3.outstanding)}</td></tr>`;
+      html += `</tbody></table></div>`;
+
+      html += `<div style="margin-top:14px"><strong>Payments History</strong><div id="paymentsList" class="tx-muted">Loading payments…</div></div>`;
+
+      html += `<div style="display:flex;gap:8px;margin-top:18px"><button class="btn primary" onclick="printStudent('${s.studentId}')">Print Record</button><button class="btn" onclick="closeView()">Close</button></div>`;
+
+      viewCard.innerHTML = html;
+
+      if(paymentsUnsubscribe) { paymentsUnsubscribe(); paymentsUnsubscribe = null; }
+      const paymentsQuery = query(collection(db,'payments'), where('studentId','==', s.studentId), orderBy('createdAt'));
+      paymentsUnsubscribe = onSnapshot(paymentsQuery, snap=>{
+        const container = document.getElementById('paymentsList');
+        if(!container) return;
+        if(snap.empty){ container.innerHTML = '<div class="tx-muted">No payments yet.</div>'; return; }
+        let listHTML = `<table><thead><tr><th>Date</th><th>Term</th><th>Amount</th><th>Method</th><th>Recorded</th></tr></thead><tbody>`;
+        snap.forEach(p=>{
+          const d = p.data();
+          const dt = d.createdAt && d.createdAt.seconds ? new Date(d.createdAt.seconds*1000).toLocaleString() : '-';
+          listHTML += `<tr><td>${dt}</td><td>${d.term}</td><td>₦${Number(d.amount).toLocaleString()}</td><td>${d.method}</td><td>${d.recordedBy || '-'}</td></tr>`;
+        });
+        listHTML += `</tbody></table>`;
+        container.innerHTML = listHTML;
+      }, err=> {
+        console.error(err); const container = document.getElementById('paymentsList'); if(container) container.innerHTML = '<div class="tx-muted">Unable to load payments</div>';
+      });
+    }
+
+    function closeView(){ modalView.classList.remove('show'); if(paymentsUnsubscribe){ paymentsUnsubscribe(); paymentsUnsubscribe = null; } }
+
+    window.printStudent = function(studentId){
+      (async ()=>{
+        try{
+          const sSnap = await getDoc(doc(db,'students', docIdFromStudentId(studentId)));
+          if(!sSnap.exists()){ showNotif('Student not found','err'); return; }
+          const s = sSnap.data();
+          const html = `<div style="font-family:sans-serif;padding:20px"><h2>${s.fullName}</h2><div>${s.studentId} · ${s.className}</div>
+            <hr><div><strong>Admission:</strong> ${s.admissionDate||'-'}</div><div><strong>Parent:</strong> ${s.parentName||'-'} · ${s.parentPhone||'-'}</div>
+            <h3 style="margin-top:12px">Per-term summary</h3>
+            <table style="width:100%;border-collapse:collapse">
+              <tr><th style="text-align:left">Term</th><th>Fees</th><th>Paid</th><th>Outstanding</th></tr>
+              <tr><td>1st</td><td>₦${Number(s.terms?.term1?.feesRequired||0).toLocaleString()}</td><td>₦${Number(s.terms?.term1?.totalPaid||0).toLocaleString()}</td><td>₦${Number(s.terms?.term1?.outstanding||0).toLocaleString()}</td></tr>
+              <tr><td>2nd</td><td>₦${Number(s.terms?.term2?.feesRequired||0).toLocaleString()}</td><td>₦${Number(s.terms?.term2?.totalPaid||0).toLocaleString()}</td><td>₦${Number(s.terms?.term2?.outstanding||0).toLocaleString()}</td></tr>
+              <tr><td>3rd</td><td>₦${Number(s.terms?.term3?.feesRequired||0).toLocaleString()}</td><td>₦${Number(s.terms?.term3?.totalPaid||0).toLocaleString()}</td><td>₦${Number(s.terms?.term3?.outstanding||0).toLocaleString()}</td></tr>
+            </table></div>`;
+          const w = window.open('','_blank','width=800,height=900');
+          w.document.write(html); w.document.close(); setTimeout(()=> w.print(),300);
+        }catch(e){ console.error(e); showNotif('Print failed','err'); }
+      })();
+    };
+
+    async function openAddPayment(docId){
+      try{
+        const sSnap = await getDoc(doc(db,'students', docId));
+        if(!sSnap.exists()){ showNotif('Student not found','err'); return; }
+        const s = sSnap.data();
+        modalPay.classList.add('show');
+        payStudentInfo.textContent = `${s.fullName} — ${s.studentId}`;
+        payStudentInfo.dataset.docId = docId;
+        payAmount.value = '';
+        payTerm.value = '1';
+      }catch(e){ console.error(e); showNotif('Error opening payment','err'); }
+    }
+    cancelPay.addEventListener('click', ()=> modalPay.classList.remove('show'));
+
+    // EMAIL SEND FUNCTION — USES YOUR ORIGINAL TEMPLATE ID
+    async function sendPaymentEmail(s, term, amount) {
+      const termKey = `term${term}`;
+      const termData = s.terms?.[termKey] || { feesRequired: 0, totalPaid: 0, outstanding: 0 };
+      const newPaid = Number(termData.totalPaid || 0) + Number(amount);
+      const outstanding = Math.max(0, Number(termData.feesRequired) - newPaid);
+
+      const params = {
+        parent_name: s.parentName || 'Parent',
+        parent_email: s.parentEmail,
+        student_name: s.fullName,
+        class_name: s.className,
+        term: term === 1 ? '1st Term' : term === 2 ? '2nd Term' : '3rd Term',
+        amount_paid: '₦' + Number(amount).toLocaleString(),
+        fees_required: '₦' + Number(termData.feesRequired).toLocaleString(),
+        total_paid: '₦' + newPaid.toLocaleString(),
+        outstanding: '₦' + outstanding.toLocaleString(),
+        outstanding_color: outstanding > 0 ? '#dc2626' : '#16a34a',
+        payment_status: outstanding === 0 ? 'FULLY PAID' : 'PARTIAL',
+        payment_method: payMethod.value,
+        date: new Date().toLocaleDateString('en-GB'),
+        year: new Date().getFullYear()
+      };
+
+      try {
+        await emailjs.send('service_rqdvw7p', 'template_uycyuem', params);
+        showNotif('Payment saved & email sent!', 'ok');
+      } catch (e) {
+        console.error(e);
+        showNotif('Payment saved, email failed', 'err');
+      }
+    }
+
+    savePaymentBtn.addEventListener('click', async ()=>{
+      const docId = payStudentInfo.dataset.docId;
+      if(!docId) return showNotif('No student selected','err');
+      const amount = Number(payAmount.value);
+      const term = Number(payTerm.value);
+      const method = payMethod.value || 'Cash';
+      if(!amount || amount <= 0) return showNotif('Enter valid amount','err');
+
+      try{
+        const sRef = doc(db,'students', docId);
+        const sSnap = await getDoc(sRef);
+        if(!sSnap.exists()){ showNotif('Student not found','err'); return; }
+        const s = sSnap.data();
+
+        await addDoc(collection(db,'payments'), {
+          studentId: s.studentId,
+          studentName: s.fullName,
+          classSlug: s.classSlug,
+          term,
+          amount: Number(amount),
+          method,
+          createdAt: serverTimestamp(),
+          recordedBy: 'web'
+        });
+
+        const termKey = `term${term}`;
+        const currentPaid = Number(s.terms?.[termKey]?.totalPaid || 0);
+        const feesRequired = Number(s.terms?.[termKey]?.feesRequired || 0);
+        const newPaid = currentPaid + amount;
+        const newOutstanding = Math.max(0, feesRequired - newPaid);
+
+        await updateDoc(sRef, {
+          [`terms.${termKey}.totalPaid`]: newPaid,
+          [`terms.${termKey}.outstanding`]: newOutstanding
+        });
+
+        await sendPaymentEmail(s, term, amount);
+        modalPay.classList.remove('show');
+      }catch(e){
+        console.error(e); showNotif('Error: ' + e.message, 'err');
+      }
+    });
+
+    async function openEditStudent(docId){
+      try{
+        const sRef = doc(db,'students', docId);
+        const sSnap = await getDoc(sRef);
+        if(!sSnap.exists()){ showNotif('Student not found','err'); return; }
+        const s = sSnap.data();
+        editingDocId = docId;
+        addTitle.textContent = 'Edit Student';
+        s_name.value = s.fullName || '';
+        s_gender.value = s.gender || 'Male';
+        s_admit.value = s.admissionDate || '';
+        s_parent.value = s.parentName || '';
+        s_phone.value = s.parentPhone || '';
+        s_parent_email.value = s.parentEmail || '';
+        s_parent_email2.value = s.parentEmail2 || '';
+        s_fees.value = Number(s.feesPerTerm || 0);
+        modalAdd.classList.add('show');
+        setTimeout(()=> s_name.focus(),120);
+      }catch(e){ console.error(e); showNotif('Error opening edit','err'); }
+    }
+
+    function confirmDeleteStudent(docId, name){
+      deleteTarget = docId;
+      confirmText.textContent = `Delete ${name}? This will remove the student record (payments remain in payments collection).`;
+      modalConfirm.classList.add('show');
+    }
+    cancelConfirmBtn.addEventListener('click', ()=> { deleteTarget = null; modalConfirm.classList.remove('show'); });
+    confirmDeleteBtn.addEventListener('click', async ()=>{
+      if(!deleteTarget) return modalConfirm.classList.remove('show');
+      try{
+        await deleteDoc(doc(db,'students', deleteTarget));
+        showNotif('Student deleted', 'ok');
+      }catch(e){ console.error(e); showNotif('Error deleting student','err'); }
+      deleteTarget = null;
+      modalConfirm.classList.remove('show');
+    });
+
+    (async function init(){
+      await loadCurrentTerm();
+      const params = new URLSearchParams(location.search);
+      const cls = params.get('class') || '';
+      const observer = new MutationObserver(()=> {
+        if(cls && classSelect.querySelector(`option[value="${cls}"]`)){
+          classSelect.value = cls;
+          loadStudentsForClass(cls);
+          observer.disconnect();
+        }
+      });
+      observer.observe(classSelect, { childList:true, subtree:true });
+    })();
+  </script>
+</body>
+</html>

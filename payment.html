@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Record Payment · Maahadu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root{--brand:#1e40af;--gold:#f59e0b;--glass:rgba(255,255,255,0.12);--border:rgba(255,255,255,0.18);--text:#e2e8f0;--shadow:0 25px 50px rgba(0,0,0,.25)}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0f172a,#1e3a8a);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .card{background:var(--glass);backdrop-filter:blur(20px);padding:2.5rem;border-radius:22px;max-width:500px;width:100%;border:1px solid var(--border);box-shadow:var(--shadow)}
+    h2{font-size:28px;font-weight:800;color:#fff;margin-bottom:1.5rem;background:linear-gradient(90deg,#fff,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center}
+    .input-group{position:relative;margin:14px 0}
+    .input-group input,.input-group select{width:100%;padding:15px 20px 15px 50px;border:1px solid var(--border);border-radius:14px;background:rgba(30,64,175,.12);color:#fff;font-size:15px}
+    .input-group input::placeholder{color:#94a3b8}
+    .input-group i{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:18px}
+    button{width:100%;padding:15px;background:linear-gradient(135deg,var(--brand),#1e40af);color:#fff;border:none;border-radius:14px;font-weight:700;cursor:pointer;margin-top:1rem}
+    button:hover{transform:translateY(-3px);box-shadow:0 15px 30px rgba(30,64,175,.5)}
+    .msg{margin-top:12px;text-align:center;font-size:14px}
+    .success{color:#16a34a}.error{color:#dc2626}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Record Payment</h2>
+
+    <div class="input-group">
+      <i class="fas fa-id-card"></i>
+      <input type="text" id="admission_number" placeholder="Admission Number" required>
+    </div>
+    <div class="input-group">
+      <i class="fas fa-money-bill"></i>
+      <input type="number" id="amount" placeholder="Amount Paid" required>
+    </div>
+
+    <button id="payBtn">Record Payment</button>
+    <p id="msg" class="msg"></p>
+  </div>
+
+  <!-- EmailJS CDN -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+     (function(){
+        emailjs.init({ publicKey: "V7jD7qsrYg99np2V5" });
+     })();
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyDm35w4edp811CsLhyiUSUqlkEt69_BWYU", authDomain: "loginsysterm.firebaseapp.com", projectId: "loginsysterm", storageBucket: "loginsysterm.fireasestorage.app", messagingSenderId: "181422276481", appId: "1:181422276481:web:0a74d8a68c2446a4673280" };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, user => { if (!user) window.location.href = "login.html"; });
+
+    document.getElementById('payBtn').onclick = async () => {
+      const admission = document.getElementById('admission_number').value.trim();
+      const amount = Number(document.getElementById('amount').value);
+      const msg = document.getElementById('msg');
+
+      if (!admission || !amount || amount <= 0) {
+        msg.className = "msg error"; msg.textContent = "Enter valid admission number and amount.";
+        return;
+      }
+
+      msg.textContent = "Processing..."; msg.className = "msg";
+
+      try {
+        const studentRef = doc(db, "students", admission);
+        const studentSnap = await getDoc(studentRef);
+
+        if (!studentSnap.exists()) throw new Error("Student not found");
+
+        const student = studentSnap.data();
+        const oldBalance = student.balance;
+        const newPaid = student.amount_paid + amount;
+        const newBalance = student.total_fees - newPaid;
+
+        if (newBalance < 0) throw new Error("Amount exceeds total fees");
+
+        // Update Firestore
+        await updateDoc(studentRef, {
+          amount_paid: newPaid,
+          balance: newBalance
+        });
+
+        msg.className = "msg success";
+        msg.textContent = `Payment recorded! Balance: ₦${newBalance}`;
+
+        // AUTO EMAIL: Only if balance becomes 0
+        if (newBalance === 0 && oldBalance > 0) {
+          const email = student.parent_email || student.parent_email2;
+          if (email) {
+            await emailjs.send("service_rqdvw7p", "template_uycyuem", {
+              to_email: email,
+              notification_type: "An Karɓi Kuɗi",
+              student_name: student.full_name,
+              class: student.class,
+              total_paid: newPaid,
+              is_debt: false,
+              is_complete: true
+            });
+            msg.textContent += " | Thank you email sent!";
+          }
+        }
+
+        setTimeout(() => location.reload(), 2000);
+      } catch (e) {
+        msg.className = "msg error";
+        msg.textContent = e.message;
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Users · Brilliant Footsteps Intnl Academy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <style>
+    :root {
+      --brand: #003366;
+      --gold: #ffb400;
+      --light-gold: #ffdd70;
+      --success: #16a34a;
+      --danger: #dc3545;
+      --card-bg: rgba(255,255,255,0.1);
+      --shadow: 0 15px 40px rgba(0,0,0,0.2);
+      --glow: 0 0 30px rgba(255,180,0,.5);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #001f3f, #003366, #0077b6);
+      color: white;
+      min-height:187 100vh;
+      overflow-x: hidden;
+    }
+
+    /* PREMIUM HEADER */
+    header.navbar {
+      background: linear-gradient(135deg, var(--brand), #001f3f);
+      padding: 1.8rem 1.2rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5);
+    }
+    header::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(255,180,0,.2), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hamburger {
+      position: absolute; left: 1.2rem; top: 2rem;
+      background: var(--gold); color: var(--brand);
+      border: none; width: 56px; height: 56px; border-radius: 50%;
+      font-size: 24px; cursor: pointer; z-index: 101;
+      box-shadow: 0 6px 20px rgba(0,0,0,.4); transition: .4s;
+    }
+    .hamburger:hover { transform: scale(1.12); box-shadow: var(--glow); }
+
+    .logo-row {
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+    }
+    .logo {
+      height: 94px; border-radius: 22px; border: 5px solid var(--gold);
+      box-shadow: var(--glow); transition: .4s;
+    }
+    .logo:hover { transform: scale(1.06); }
+    .school-name {
+      font-size: 32px; font-weight: 900; letter-spacing: 1.5px;
+      text-shadow: 0 4px 12px rgba(0,0,0,.6);
+    }
+    .tagline { font-size: 17px; opacity: 0.94; font-weight: 500; }
+    .motto {
+      color: var(--light-gold); font-weight: 800; font-size: 20px;
+      margin: 16px 0; letter-spacing: 1.2px;
+      text-shadow: 0 3px 10px rgba(0,0,0,.5);
+    }
+    .icons {
+      display: flex; gap: 26px; font-size: 26px; color: var(--light-gold);
+    }
+
+    /* SIDEBAR */
+    nav.sidebar {
+      position: fixed; left: -340px; top: 0; width: 340px; height: 100%;
+      background: linear-gradient(135deg, var(--brand), #001f3f);
+      padding-top: 130px; transition: .4s ease; z-index: 100;
+      box-shadow: 8px 0 40px rgba(0,0,0,.5);
+    }
+    nav.sidebar.active { left: 0; }
+    nav.sidebar a {
+      display: flex; align-items: center; gap: 20px;
+      padding: 1.4rem 2.2rem; color: #fff; text-decoration: none;
+      font-weight: 600; font-size: 17px; transition: .3s;
+    }
+    nav.sidebar a:hover { background: rgba(255,180,0,.3); padding-left: 3.5rem; }
+
+    /* PRESIDENTIAL WELCOME */
+    .welcome-presidential {
+      text-align: center; margin: 2.5rem auto; max-width: 900px;
+      padding: 2.5rem; background: var(--card-bg);
+      border-radius: 24px; border-left: 8px solid var(--gold);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+    .welcome-presidential h1 {
+      font-size: 36px; margin-bottom: 1rem; color: var(--light-gold);
+      text-shadow: 0 3px 10px rgba(0,0,0,.4);
+    }
+    .welcome-presidential p {
+      font-size: 18px; line-height: 1.8; opacity: 0.96;
+    }
+
+    /* MAIN CARD */
+    .admin-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      padding: 2.5rem;
+      border-radius: 24px;
+      max-width: 900px;
+      margin: 2rem auto;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .card-title {
+      font-size: 26px; margin-bottom: 1.5rem; color: var(--light-gold);
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    input {
+      width: 100%; padding: 16px 20px; margin: 10px 0;
+      border: none; border-radius: 14px; font-size: 16px;
+      background: rgba(255,255,255,0.2); color: white;
+      transition: .3s;
+    }
+    input::placeholder { color: rgba(255,255,255,0.7); }
+    input:focus {
+      outline: none; background: rgba(255,255,255,0.3);
+      box-shadow: 0 0 0 5px rgba(255,180,0,0.25);
+    }
+    button {
+      padding: 16px 32px; background: var(--gold); color: var(--brand);
+      border: none; border-radius: 14px; font-weight: 700; font-size: 17px;
+      cursor: pointer; transition: .4s;
+    }
+    button:hover {
+      background: #e6a800; transform: translateY(-4px);
+      box-shadow: var(--glow);
+    }
+    #message {
+      margin-top: 15px; padding: 12px; border-radius: 10px; font-weight: 600;
+    }
+    .success { background: rgba(0,255,0,0.2); color: #90EE90; }
+    .error { background: rgba(255,0,0,0.2); color: #ffb3b3; }
+
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 2rem;
+      background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden;
+    }
+    th {
+      background: rgba(255,180,0,0.3); padding: 18px; font-size: 17px; font-weight: 700;
+    }
+    td { padding: 16px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    tr:hover { background: rgba(255,255,255,0.1); }
+    .delete-btn {
+      background: var(--danger); padding: 10px 18px; border-radius: 10px;
+      font-weight: 600; transition: .3s;
+    }
+    .delete-btn:hover { background: #b02a37; transform: scale(1.05); }
+
+    @media (max-width: 768px) {
+      .school-name { font-size: 26px; }
+      .welcome-presidential h1 { font-size: 28px; }
+      .admin-card { padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PREMIUM HEADER -->
+  <header class="navbar">
+    <button class="hamburger" id="hambtn">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="logo-row">
+      <img src="brilliant1.jpg" alt="Brilliant Logo" class="logo">
+      <div class="school-name">Brilliant Footsteps Intnl Academy — Sokoto</div>
+      <div class="tagline">Nurturing Excellence | Building Character | Shaping Leaders</div>
+      <div class="motto">“Building Tomorrow's Leaders Through Excellence & Discipline”</div>
+      <div class="icons">
+        <i class="fas fa-pencil-alt"></i>
+        <i class="fas fa-book-open"></i>
+        <i class="fas fa-futbol"></i>
+        <i class="fas fa-shoe-prints"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar" class="sidebar">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="classes.html"><i class="fas fa-chalkboard-teacher"></i> Classes</a>
+    <a href="students.html"><i class="fas fa-user-graduate"></i> Students</a>
+    <a href="payments.html"><i class="fas fa-money-bill-wave"></i> Payments</a>
+    <a href="parents_look.html"><i class="fas fa-users"></i> Parent Portal</a>
+    <a href="admin_users.html"><i class="fas fa-user-shield"></i> Manage Teachers</a>
+    <a href="admin_panel.html"><i class="fas fa-cogs"></i> Admin Panel</a>
+  </nav>
+
+  <!-- PRESIDENTIAL WELCOME MESSAGE -->
+  <div class="welcome-presidential">
+    <h1>As-Salamu Alaikum, Esteemed Administrator</h1>
+    <p>Welcome to the <strong>Teacher Management Portal</strong> of Brilliant Footsteps International Academy, Sokoto.</p>
+    <p>Here, you have the authority to add new teaching staff and remove access when necessary — all with complete security and real-time updates.</p>
+    <p><em>"The best of people are those who bring most benefit to others." — Prophet Muhammad (SAW)</em></p>
+  </div>
+
+  <!-- MAIN ADMIN CARD -->
+  <div class="admin-card">
+    <h2 class="card-title">Manage Teaching Staff</h2>
+    
+    <div class="form-group">
+      <h3>Add New Teacher</h3>
+      <input type="email" id="email" placeholder="Enter Teacher Email (e.g. teacher@brilliant.edu.ng)" required />
+      <input type="password" id="password" placeholder="Set Strong Password" required />
+      <button id="addUser">Add Teacher Account</button>
+      <div id="message"></div>
+    </div>
+
+    <h3 style="margin-top: 3rem; color: var(--light-gold);">Current Teaching Staff</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Email Address</th>
+          <th>Password (Hidden)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="userList">
+        <tr><td colspan="3" style="text-align:center; padding: 2rem;">Loading teachers...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- HAMBURGER & FIREBASE SCRIPT -->
+  <script>
+    document.getElementById('hambtn').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('active');
+    });
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDm35w4edp811CsLhyiUSUqlkEt69_BWYU",
+      authDomain: "loginsysterm.firebaseapp.com",
+      projectId: "loginsysterm",
+      storageBucket: "loginsysterm.firebasestorage.app",
+      messagingSenderId: "181422276481",
+      appId: "1:181422276481:web:0a74d8a68c2446a4673280"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Auto-login admin
+    try {
+      await signInWithEmailAndPassword(auth, "maahaduschool@gmail.com", "01011968");
+    } catch (err) { console.log("Admin already logged in"); }
+
+    const message = document.getElementById("message");
+    const userList = document.getElementById("userList");
+
+    // Real-time listener
+    onSnapshot(collection(db, "users"), (snapshot) => {
+      userList.innerHTML = "";
+      if (snapshot.empty) {
+        userList.innerHTML = "<tr><td colspan='3'>No teachers registered yet</td></tr>";
+        return;
+      }
+      snapshot.forEach(docSnap => {
+        const user = docSnap.data();
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${user.email}</td>
+          <td>••••••••</td>
+          <td><button class="delete-btn" data-id="${docSnap.id}">Remove Access</button></td>
+        `;
+        userList.appendChild(row);
+      });
+
+      document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.onclick = async () => {
+          if (confirm("Are you sure you want to remove this teacher's access?")) {
+            await deleteDoc(doc(db, "users", btn.dataset.id));
+            message.innerHTML = "Teacher access removed successfully!";
+            message.className = "success";
+          }
+        };
+      });
+    });
+
+    // Add teacher
+    document.getElementById("addUser").onclick = async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        message.innerHTML = "Please fill both fields";
+        message.className = "error";
+        return;
+      }
+
+      try {
+        await setDoc(doc(db, "users", email), { email, password });
+        message.innerHTML = "New teacher added successfully!";
+        message.className = "success";
+        document.getElementById("email").value = "";
+        document.getElementById("password").value = "";
+      } catch (err) {
+        message.innerHTML = "Error: " + err.message;
+        message.className = "error";
+      }
+    };
+  </script>
+</body>
+</html>
